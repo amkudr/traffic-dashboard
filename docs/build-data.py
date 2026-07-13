@@ -31,9 +31,9 @@ def merge_entries(existing_dict, new_entries):
         # Remap any future-dated entry to today
         if ts > today_ts:
             ts = today_ts
-        # Merge: accumulate counts if key already exists (could be same day, different source)
+        # Merge: keep the maximum count (since GitHub API returns the total for that day, which might increase during the day)
         if ts in existing_dict:
-            existing_dict[ts]["count"]   += entry["count"]
+            existing_dict[ts]["count"] = max(existing_dict[ts]["count"], entry["count"])
             existing_dict[ts]["uniques"] = max(existing_dict[ts]["uniques"], entry["uniques"])
         else:
             existing_dict[ts] = {"count": entry["count"], "uniques": entry["uniques"]}

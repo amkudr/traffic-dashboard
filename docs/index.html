@@ -496,10 +496,13 @@
                 return {
                     labels: views.map(v => fmtDate(v.timestamp)),
                     counts: views.map(v => v.count),
+                    uniques: views.map(v => v.uniques),
+                    keys: null,
                 };
             }
             // Group by ISO week (Mon-based) or month
             const buckets = {};
+            const uniqueBuckets = {};
             views.forEach(v => {
                 const d = new Date(v.timestamp);
                 let key;
@@ -514,6 +517,7 @@
                     key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
                 }
                 buckets[key] = (buckets[key] || 0) + v.count;
+                uniqueBuckets[key] = (uniqueBuckets[key] || 0) + (v.uniques || 0);
             });
             const sortedKeys = Object.keys(buckets).sort();
             const labels = sortedKeys.map(k => {
@@ -524,30 +528,60 @@
                 const [yr, mo] = k.split('-');
                 return new Date(yr, mo - 1).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
             });
-            return { labels, counts: sortedKeys.map(k => buckets[k]) };
+            return { labels, counts: sortedKeys.map(k => buckets[k]), uniques: sortedKeys.map(k => uniqueBuckets[k]), keys: sortedKeys };
         }
 
         function buildUnifiedChart(data, period) {
             const repos = Object.keys(data);
-            // Build a unified label axis (union of all date labels for 'days')
+            // Build a unified label axis (union of all date labels / buckets)
             let unionLabels;
+            let unionKeys; // parallel array of raw keys for weeks/months lookup
             if (period === 'days') {
                 const allTs = [...new Set(
                     repos.flatMap(r => data[r].views.map(v => v.timestamp))
                 )].sort();
                 unionLabels = allTs.map(ts => fmtDate(ts));
+                unionKeys = null;
             } else {
-                // For weeks/months use the first repo's aggregated labels as reference
-                const ref = aggregateViews(data[repos[0]].views, period);
-                unionLabels = ref.labels;
+                // Collect every bucket key from every repo, then take union
+                const allKeys = new Set(
+                    repos.flatMap(r => {
+                        const agg = aggregateViews(data[r].views, period);
+                        return agg.keys;
+                    })
+                );
+                unionKeys = [...allKeys].sort();
+                unionLabels = unionKeys.map(k => {
+                    if (period === 'weeks') {
+                        const d = new Date(k);
+                        return 'Wk ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    }
+                    const [yr, mo] = k.split('-');
+                    return new Date(yr, mo - 1).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+                });
             }
 
             const datasets = repos.map((repo, i) => {
                 const pal = PALETTES[i % PALETTES.length];
-                const agg = aggregateViews(data[repo].views, period);
+                let counts;
+                let uniques;
+                if (period === 'days') {
+                    const agg = aggregateViews(data[repo].views, period);
+                    counts = agg.counts;
+                    uniques = agg.uniques;
+                } else {
+                    // Aggregate to a map, then align to unionKeys (fill 0 for missing)
+                    const agg = aggregateViews(data[repo].views, period);
+                    const map = {};
+                    const uMap = {};
+                    agg.keys.forEach((k, idx) => { map[k] = agg.counts[idx]; uMap[k] = agg.uniques[idx]; });
+                    counts = unionKeys.map(k => map[k] || 0);
+                    uniques = unionKeys.map(k => uMap[k] || 0);
+                }
                 return {
                     label: repo,
-                    data: agg.counts,
+                    data: counts,
+                    uniquesData: uniques,
                     borderColor: pal.border,
                     backgroundColor: hexToRgba(pal.border, 0.08),
                     fill: true,
@@ -578,6 +612,22 @@
                         borderWidth: 1,
                         padding: 12,
                         cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y + ' views';
+                                }
+                                const uniques = context.dataset.uniquesData?.[context.dataIndex];
+                                if (uniques !== undefined) {
+                                    label += ' (' + uniques + ' unique)';
+                                }
+                                return label;
+                            }
+                        }
                     },
                 },
                 scales: {

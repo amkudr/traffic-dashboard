@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Repo Traffic Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 2rem;
+            background: #0d1117;
+            color: #e6edf3;
+        }
+
+        .chart-box {
+            max-width: 700px;
+            margin: 2rem auto;
+            background: #161b22;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Repository Traffic Dashboard</h1>
+    <div id="charts"></div>
+
+    <script>
+        fetch('data.json')
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('charts');
+                Object.entries(data).forEach(([repo, info]) => {
+                    const box = document.createElement('div');
+                    box.className = 'chart-box';
+                    box.innerHTML = `<h2>${repo} (${info.uniques} unique visitors)</h2><canvas id="${repo}"></canvas>`;
+                    container.appendChild(box);
+
+                    const ctx = document.getElementById(repo);
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: info.views.map(v => v.timestamp.split('T')[0]),
+                            datasets: [{
+                                label: 'Views',
+                                data: info.views.map(v => v.count),
+                                borderColor: '#58a6ff',
+                                fill: false
+                            }, {
+                                label: 'Unique visitors',
+                                data: info.views.map(v => v.uniques),
+                                borderColor: '#3fb950',
+                                fill: false
+                            }]
+                        }
+                    });
+                });
+            });
+    </script>
+</body>
+
+</html>

@@ -27,8 +27,11 @@ jobs:
             gh api repos/${{ github.repository_owner }}/$repo/traffic/clones > traffic-data/$repo-clones.json
           done
 
+      - name: Build dashboard data
+        run: python3 docs/build-data.py
+
       - uses: EndBug/add-and-commit@v9
         with:
-          add: 'traffic-data'
-          message: 'Update traffic for all repos'
+          add: 'traffic-data docs/data.json'
+          message: 'Update traffic data and dashboard'
           github_token: ${{ secrets.GH_ACCESS_TOKEN }}

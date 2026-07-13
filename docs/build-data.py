@@ -1,4 +1,5 @@
 import json, os
+from datetime import datetime, timezone
 
 repos = ["surf-tracker", "Star-Wars-Simulator", "Public-transport-network", "Google-Project"]
 
@@ -21,10 +22,21 @@ else:
 
 def merge_entries(existing_dict, new_entries):
     """Merge a list of {timestamp, count, uniques} entries into a dict keyed by timestamp.
-    Newer data from the API wins (GitHub can revise counts within the 14-day window)."""
+    Newer data from the API wins (GitHub can revise counts within the 14-day window).
+    GitHub occasionally returns today's partial-day data with tomorrow's UTC date; we
+    remap any future timestamp back to today so it is stored and displayed correctly."""
+    today_ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT00:00:00Z")
     for entry in new_entries:
         ts = entry["timestamp"]
-        existing_dict[ts] = {"count": entry["count"], "uniques": entry["uniques"]}
+        # Remap any future-dated entry to today
+        if ts > today_ts:
+            ts = today_ts
+        # Merge: accumulate counts if key already exists (could be same day, different source)
+        if ts in existing_dict:
+            existing_dict[ts]["count"]   += entry["count"]
+            existing_dict[ts]["uniques"] = max(existing_dict[ts]["uniques"], entry["uniques"])
+        else:
+            existing_dict[ts] = {"count": entry["count"], "uniques": entry["uniques"]}
     return existing_dict
 
 # ── Merge new API data into history ─────────────────────────────────────────

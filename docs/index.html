@@ -1,66 +1,722 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Repo Traffic Dashboard</title>
+    <meta name="description"
+        content="Live GitHub repository traffic analytics — views, unique visitors, and trends at a glance." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
+        /* ── Reset & tokens ─────────────────────────────── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #07090f;
+            --surface: #0e1117;
+            --card: #13181f;
+            --border: rgba(255, 255, 255, 0.07);
+            --accent-blue: #4f8ef7;
+            --accent-teal: #34d399;
+            --accent-pink: #f472b6;
+            --accent-amber: #fbbf24;
+            --text-primary: #e6edf3;
+            --text-muted: #8b949e;
+            --radius: 14px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: sans-serif;
-            margin: 2rem;
-            background: #0d1117;
-            color: #e6edf3;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding-bottom: 4rem;
+        }
+
+        /* ── Header ─────────────────────────────────────── */
+        .header {
+            position: relative;
+            overflow: hidden;
+            padding: 3.5rem 2rem 2.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, #0d1b3e 0%, #07090f 60%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 80% at 20% 50%, rgba(79, 142, 247, .18) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 60% at 80% 30%, rgba(52, 211, 153, .12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        .header h1 {
+            font-size: clamp(1.6rem, 4vw, 2.4rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #e6edf3 30%, var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            margin-top: .5rem;
+            font-size: .9rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .header-badge {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: .25rem .75rem;
+            border-radius: 999px;
+            background: rgba(79, 142, 247, .12);
+            border: 1px solid rgba(79, 142, 247, .3);
+            font-size: .75rem;
+            font-weight: 500;
+            color: var(--accent-blue);
+            letter-spacing: .04em;
+        }
+
+        /* ── Layout ──────────────────────────────────────── */
+        .page-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* ── Summary bar ─────────────────────────────────── */
+        #summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: .3rem;
+            box-shadow: var(--shadow);
+            transition: transform .2s, box-shadow .2s;
+            animation: slideUp .4s ease both;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .55);
+        }
+
+        .stat-card .label {
+            font-size: .72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--text-muted);
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-card .sub {
+            font-size: .78rem;
+            color: var(--text-muted);
+        }
+
+        /* ── Section label ───────────────────────────────── */
+        .section-title {
+            font-size: .8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        /* ── Chart grid ──────────────────────────────────── */
+        #charts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 540px) {
+            #charts {
+                grid-template-columns: 1fr;
+            }
         }
 
         .chart-box {
-            max-width: 700px;
-            margin: 2rem auto;
-            background: #161b22;
-            padding: 1rem;
-            border-radius: 8px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            animation: slideUp .5s ease both;
+            transition: transform .2s, box-shadow .2s;
         }
 
-        h1 {
+        .chart-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, .55);
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
+            gap: 1rem;
+        }
+
+        .chart-header .repo-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .chart-header .repo-name span {
+            display: block;
+            font-size: .75rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-top: .15rem;
+        }
+
+        .chip-group {
+            display: flex;
+            gap: .4rem;
+            flex-shrink: 0;
+        }
+
+        .chip {
+            font-size: .72rem;
+            font-weight: 600;
+            padding: .2rem .6rem;
+            border-radius: 999px;
+            line-height: 1.4;
+        }
+
+        .chip.blue {
+            background: rgba(79, 142, 247, .15);
+            color: var(--accent-blue);
+            border: 1px solid rgba(79, 142, 247, .25);
+        }
+
+        .chip.teal {
+            background: rgba(52, 211, 153, .12);
+            color: var(--accent-teal);
+            border: 1px solid rgba(52, 211, 153, .22);
+        }
+
+        .chip.pink {
+            background: rgba(244, 114, 182, .12);
+            color: var(--accent-pink);
+            border: 1px solid rgba(244, 114, 182, .22);
+        }
+
+        .chip.amber {
+            background: rgba(251, 191, 36, .10);
+            color: var(--accent-amber);
+            border: 1px solid rgba(251, 191, 36, .20);
+        }
+
+        canvas {
+            max-height: 220px;
+        }
+
+        /* ── Unified overview chart ──────────────────────── */
+        .overview-wrap {
+            margin-bottom: 2.5rem;
+            animation: slideUp .35s ease both;
+        }
+
+        .overview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: .75rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .overview-header .overview-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .overview-header .overview-title span {
+            display: block;
+            font-size: .75rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-top: .1rem;
+        }
+
+        .period-tabs {
+            display: flex;
+            gap: .35rem;
+        }
+
+        .period-tab {
+            cursor: pointer;
+            padding: .3rem .85rem;
+            border-radius: 999px;
+            font-size: .75rem;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-muted);
+            transition: background .15s, color .15s, border-color .15s;
+        }
+
+        .period-tab:hover {
+            border-color: rgba(79, 142, 247, .4);
+            color: var(--accent-blue);
+        }
+
+        .period-tab.active {
+            background: rgba(79, 142, 247, .18);
+            border-color: rgba(79, 142, 247, .45);
+            color: var(--accent-blue);
+        }
+
+        .overview-canvas-wrap {
+            position: relative;
+            height: 300px;
+        }
+
+        /* ── Empty state ─────────────────────────────────── */
+        .empty-state {
+            grid-column: 1/-1;
             text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            font-size: .95rem;
+        }
+
+        /* ── Footer ──────────────────────────────────────── */
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: .75rem;
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ── Animations ──────────────────────────────────── */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Scrollbar ───────────────────────────────────── */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2d333b;
+            border-radius: 4px;
         }
     </style>
 </head>
 
 <body>
-    <h1>Repository Traffic Dashboard</h1>
-    <div id="charts"></div>
+
+    <!-- ── Header ── -->
+    <header class="header">
+        <h1>Repository Traffic Dashboard</h1>
+        <p>GitHub views &amp; unique visitor analytics across all repos</p>
+        <div class="header-badge" id="last-updated">Loading data…</div>
+    </header>
+
+    <!-- ── Main ── -->
+    <main class="page-wrap">
+        <div id="summary-cards"></div>
+
+        <!-- ── Unified comparison chart ── -->
+        <div class="overview-wrap chart-box" id="overview-wrap">
+            <div class="overview-header">
+                <div class="overview-title">
+                    All Repos — Views Comparison
+                    <span>Compare traffic across all repositories in a single view</span>
+                </div>
+                <div class="period-tabs" id="period-tabs">
+                    <button class="period-tab active" id="tab-days" data-period="days">Days</button>
+                    <button class="period-tab" id="tab-weeks" data-period="weeks">Weeks</button>
+                    <button class="period-tab" id="tab-months" data-period="months">Months</button>
+                </div>
+            </div>
+            <div class="overview-canvas-wrap">
+                <canvas id="overview-chart"></canvas>
+            </div>
+        </div>
+
+        <p class="section-title">Traffic over the last 14 days — per repo</p>
+        <div id="charts"></div>
+    </main>
+
+    <footer>
+        Data auto-refreshed by GitHub Actions ·
+        <a href="https://github.com" target="_blank" rel="noopener">View on GitHub</a>
+    </footer>
 
     <script>
-        fetch('data.json')
-            .then(res => res.json())
-            .then(data => {
-                const container = document.getElementById('charts');
-                Object.entries(data).forEach(([repo, info]) => {
-                    const box = document.createElement('div');
-                    box.className = 'chart-box';
-                    box.innerHTML = `<h2>${repo} (${info.uniques} unique visitors)</h2><canvas id="${repo}"></canvas>`;
-                    container.appendChild(box);
+        const PALETTES = [
+            { border: '#4f8ef7', chip: 'blue', unique: '#34d399' },
+            { border: '#f472b6', chip: 'pink', unique: '#a78bfa' },
+            { border: '#fbbf24', chip: 'amber', unique: '#34d399' },
+            { border: '#34d399', chip: 'teal', unique: '#4f8ef7' },
+        ];
 
-                    const ctx = document.getElementById(repo);
-                    new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: info.views.map(v => v.timestamp.split('T')[0]),
-                            datasets: [{
-                                label: 'Views',
-                                data: info.views.map(v => v.count),
-                                borderColor: '#58a6ff',
-                                fill: false
-                            }, {
-                                label: 'Unique visitors',
-                                data: info.views.map(v => v.uniques),
-                                borderColor: '#3fb950',
-                                fill: false
-                            }]
-                        }
-                    });
+        Chart.defaults.color = '#8b949e';
+        Chart.defaults.font.family = 'Inter, sans-serif';
+        Chart.defaults.font.size = 11;
+
+        function fmt(n) { return n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n); }
+
+        function fmtDate(iso) {
+            return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function buildSummary(data) {
+            const repos = Object.keys(data);
+            const totalViews = repos.reduce((s, r) => s + data[r].count, 0);
+            const totalUniq = repos.reduce((s, r) => s + data[r].uniques, 0);
+            const topRepo = repos.reduce((a, b) => data[a].count >= data[b].count ? a : b, repos[0]);
+            const allDates = repos.flatMap(r => data[r].views.map(v => v.timestamp));
+            const latest = allDates.sort().pop();
+
+            document.getElementById('last-updated').textContent =
+                latest ? `Last data: ${fmtDate(latest)}` : 'No data yet';
+
+            const defs = [
+                { label: 'Total Views', value: fmt(totalViews), sub: 'across all repos', color: '#4f8ef7' },
+                { label: 'Unique Visitors', value: fmt(totalUniq), sub: 'distinct visitors', color: '#34d399' },
+                { label: 'Repos Tracked', value: repos.length, sub: 'active repositories', color: '#f472b6' },
+                { label: 'Top Repo', value: topRepo, sub: `${data[topRepo].count} views`, color: '#fbbf24', small: true },
+            ];
+
+            const wrap = document.getElementById('summary-cards');
+            defs.forEach((c, i) => {
+                const el = document.createElement('div');
+                el.className = 'stat-card';
+                el.style.cssText = `animation-delay:${i * 80}ms; border-top: 3px solid ${c.color}`;
+                el.innerHTML = `
+          <div class="label">${c.label}</div>
+          <div class="value" style="color:${c.color};${c.small ? 'font-size:1.1rem' : ''}">${c.value}</div>
+          <div class="sub">${c.sub}</div>`;
+                wrap.appendChild(el);
+            });
+        }
+
+        function hexToRgba(hex, alpha) {
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r},${g},${b},${alpha})`;
+        }
+
+        /* ── Unified overview chart ─────────────────────── */
+        let overviewChart = null;
+
+        function aggregateViews(views, period) {
+            if (period === 'days') {
+                return {
+                    labels: views.map(v => fmtDate(v.timestamp)),
+                    counts: views.map(v => v.count),
+                };
+            }
+            // Group by ISO week (Mon-based) or month
+            const buckets = {};
+            views.forEach(v => {
+                const d = new Date(v.timestamp);
+                let key;
+                if (period === 'weeks') {
+                    // Monday of the week
+                    const day = d.getDay(); // 0=Sun
+                    const diff = (day === 0 ? -6 : 1 - day);
+                    const mon = new Date(d);
+                    mon.setDate(d.getDate() + diff);
+                    key = mon.toISOString().split('T')[0];
+                } else {
+                    key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                }
+                buckets[key] = (buckets[key] || 0) + v.count;
+            });
+            const sortedKeys = Object.keys(buckets).sort();
+            const labels = sortedKeys.map(k => {
+                if (period === 'weeks') {
+                    const d = new Date(k);
+                    return 'Wk ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                }
+                const [yr, mo] = k.split('-');
+                return new Date(yr, mo - 1).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+            });
+            return { labels, counts: sortedKeys.map(k => buckets[k]) };
+        }
+
+        function buildUnifiedChart(data, period) {
+            const repos = Object.keys(data);
+            // Build a unified label axis (union of all date labels for 'days')
+            let unionLabels;
+            if (period === 'days') {
+                const allTs = [...new Set(
+                    repos.flatMap(r => data[r].views.map(v => v.timestamp))
+                )].sort();
+                unionLabels = allTs.map(ts => fmtDate(ts));
+            } else {
+                // For weeks/months use the first repo's aggregated labels as reference
+                const ref = aggregateViews(data[repos[0]].views, period);
+                unionLabels = ref.labels;
+            }
+
+            const datasets = repos.map((repo, i) => {
+                const pal = PALETTES[i % PALETTES.length];
+                const agg = aggregateViews(data[repo].views, period);
+                return {
+                    label: repo,
+                    data: agg.counts,
+                    borderColor: pal.border,
+                    backgroundColor: hexToRgba(pal.border, 0.08),
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: pal.border,
+                    borderWidth: 2,
+                };
+            });
+
+            const ctx = document.getElementById('overview-chart').getContext('2d');
+
+            const CHART_OPTS = {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                animation: { duration: 350, easing: 'easeInOutQuart' },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: { boxWidth: 10, boxHeight: 10, borderRadius: 3, useBorderRadius: true, padding: 16 },
+                    },
+                    tooltip: {
+                        backgroundColor: '#1c2330',
+                        borderColor: 'rgba(255,255,255,0.08)',
+                        borderWidth: 1,
+                        padding: 12,
+                        cornerRadius: 8,
+                    },
+                },
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { maxRotation: 40, font: { size: 10 } } },
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { stepSize: 1, font: { size: 10 } } },
+                },
+            };
+
+            if (overviewChart) {
+                overviewChart.data.labels = unionLabels;
+                overviewChart.data.datasets = datasets;
+                overviewChart.update();
+            } else {
+                overviewChart = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: unionLabels, datasets },
+                    options: CHART_OPTS,
                 });
+            }
+        }
+
+        function initPeriodTabs(data) {
+            let current = 'days';
+            document.getElementById('period-tabs').addEventListener('click', e => {
+                const btn = e.target.closest('.period-tab');
+                if (!btn) return;
+                const period = btn.dataset.period;
+                if (period === current) return;
+                current = period;
+                document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                buildUnifiedChart(data, period);
+            });
+        }
+
+        function buildChart(repo, info, palette, index) {
+            const container = document.getElementById('charts');
+            const canvasId = `chart_${repo.replace(/[^a-z0-9]/gi, '_')}`;
+            const box = document.createElement('div');
+            box.className = 'chart-box';
+            box.style.animationDelay = `${index * 100}ms`;
+            box.innerHTML = `
+        <div class="chart-header">
+          <div class="repo-name">
+            ${repo}
+            <span>${info.count} views · ${info.uniques} unique</span>
+          </div>
+          <div class="chip-group">
+            <span class="chip ${palette.chip}">${fmt(info.count)} views</span>
+            <span class="chip teal">${fmt(info.uniques)} uniq</span>
+          </div>
+        </div>
+        <canvas id="${canvasId}"></canvas>`;
+            container.appendChild(box);
+
+            const labels = info.views.map(v => fmtDate(v.timestamp));
+            const views = info.views.map(v => v.count);
+            const uniq = info.views.map(v => v.uniques);
+
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            const gradFill = ctx.createLinearGradient(0, 0, 0, 200);
+            gradFill.addColorStop(0, hexToRgba(palette.border, 0.30));
+            gradFill.addColorStop(1, hexToRgba(palette.border, 0.00));
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [
+                        {
+                            label: 'Views',
+                            data: views,
+                            borderColor: palette.border,
+                            backgroundColor: gradFill,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: palette.border,
+                            borderWidth: 2,
+                        },
+                        {
+                            label: 'Unique Visitors',
+                            data: uniq,
+                            borderColor: palette.unique,
+                            backgroundColor: 'transparent',
+                            fill: false,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: palette.unique,
+                            borderWidth: 2,
+                            borderDash: [5, 4],
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: {
+                            position: 'top', align: 'end',
+                            labels: { boxWidth: 10, boxHeight: 10, borderRadius: 3, useBorderRadius: true, padding: 12 },
+                        },
+                        tooltip: {
+                            backgroundColor: '#1c2330',
+                            borderColor: 'rgba(255,255,255,0.08)',
+                            borderWidth: 1,
+                            padding: 10,
+                            cornerRadius: 8,
+                        },
+                    },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { maxRotation: 45, font: { size: 10 } } },
+                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { stepSize: 1, font: { size: 10 } } },
+                    },
+                },
+            });
+        }
+
+        fetch('data.json')
+            .then(r => { if (!r.ok) throw new Error('Failed to load data.json'); return r.json(); })
+            .then(data => {
+                buildSummary(data);
+                const entries = Object.entries(data);
+                if (!entries.length) {
+                    document.getElementById('overview-wrap').style.display = 'none';
+                    document.getElementById('charts').innerHTML =
+                        `<div class="empty-state"><div class="icon">📭</div><p>No repository data available yet.</p></div>`;
+                    return;
+                }
+                buildUnifiedChart(data, 'days');
+                initPeriodTabs(data);
+                entries.forEach(([repo, info], i) => buildChart(repo, info, PALETTES[i % PALETTES.length], i));
+            })
+            .catch(err => {
+                document.getElementById('overview-wrap').style.display = 'none';
+                document.getElementById('charts').innerHTML =
+                    `<div class="empty-state"><div class="icon">⚠️</div><p>Could not load traffic data.<br><small>${err.message}</small></p></div>`;
             });
     </script>
 </body>

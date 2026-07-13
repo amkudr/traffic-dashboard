@@ -32,6 +32,6 @@ jobs:
 
       - uses: EndBug/add-and-commit@v9
         with:
-          add: 'traffic-data docs/data.json'
+          add: 'traffic-data docs/data.json docs/clones.json docs/index.html docs/build-data.py'
           message: 'Update traffic data and dashboard'
           github_token: ${{ secrets.GH_ACCESS_TOKEN }}

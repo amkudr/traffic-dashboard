@@ -152,6 +152,16 @@
         "timestamp": "2026-07-28T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-07-29T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-07-30T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
@@ -478,8 +488,8 @@
     ]
   },
   "Google-Project": {
-    "count": 10,
-    "uniques": 9,
+    "count": 13,
+    "uniques": 11,
     "views": [
       {
         "timestamp": "2026-06-29T00:00:00Z",
@@ -635,6 +645,11 @@
         "timestamp": "2026-07-29T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-07-30T00:00:00Z",
+        "count": 3,
+        "uniques": 2
       }
     ]
   }

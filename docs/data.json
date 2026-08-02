@@ -162,6 +162,11 @@
         "timestamp": "2026-07-30T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-07-31T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
@@ -326,6 +331,16 @@
       },
       {
         "timestamp": "2026-07-30T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-07-31T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-08-01T00:00:00Z",
         "count": 0,
         "uniques": 0
       }
@@ -665,6 +680,11 @@
         "timestamp": "2026-07-30T00:00:00Z",
         "count": 3,
         "uniques": 2
+      },
+      {
+        "timestamp": "2026-07-31T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   }

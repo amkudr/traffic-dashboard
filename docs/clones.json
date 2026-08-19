@@ -242,12 +242,22 @@
         "timestamp": "2026-08-15T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-08-16T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-08-17T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
   "Star-Wars-Simulator": {
-    "count": 9,
-    "uniques": 8,
+    "count": 10,
+    "uniques": 9,
     "clones": [
       {
         "timestamp": "2026-06-29T00:00:00Z",
@@ -488,6 +498,16 @@
         "timestamp": "2026-08-15T00:00:00Z",
         "count": 1,
         "uniques": 1
+      },
+      {
+        "timestamp": "2026-08-16T00:00:00Z",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "timestamp": "2026-08-17T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
@@ -734,6 +754,16 @@
         "timestamp": "2026-08-15T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-08-16T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-08-17T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
@@ -978,6 +1008,16 @@
       },
       {
         "timestamp": "2026-08-15T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-08-16T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-08-17T00:00:00Z",
         "count": 0,
         "uniques": 0
       }

@@ -1,7 +1,7 @@
 {
   "surf-tracker": {
-    "count": 118,
-    "uniques": 58,
+    "count": 119,
+    "uniques": 59,
     "clones": [
       {
         "timestamp": "2026-06-29T00:00:00Z",
@@ -347,6 +347,16 @@
         "timestamp": "2026-09-05T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-06T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-07T00:00:00Z",
+        "count": 1,
+        "uniques": 1
       }
     ]
   },
@@ -698,12 +708,22 @@
         "timestamp": "2026-09-05T00:00:00Z",
         "count": 1,
         "uniques": 1
+      },
+      {
+        "timestamp": "2026-09-06T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-07T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
   "Public-transport-network": {
-    "count": 14,
-    "uniques": 13,
+    "count": 16,
+    "uniques": 14,
     "clones": [
       {
         "timestamp": "2026-06-29T00:00:00Z",
@@ -1049,12 +1069,22 @@
         "timestamp": "2026-09-05T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-06T00:00:00Z",
+        "count": 2,
+        "uniques": 1
+      },
+      {
+        "timestamp": "2026-09-07T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
   "Google-Project": {
-    "count": 5,
-    "uniques": 4,
+    "count": 6,
+    "uniques": 5,
     "clones": [
       {
         "timestamp": "2026-06-29T00:00:00Z",
@@ -1350,6 +1380,66 @@
         "timestamp": "2026-08-26T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-08-27T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-08-28T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-08-29T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-08-30T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-08-31T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-01T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-02T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-03T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-04T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-05T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-06T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-07T00:00:00Z",
+        "count": 1,
+        "uniques": 1
       }
     ]
   }

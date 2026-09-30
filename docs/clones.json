@@ -1,7 +1,7 @@
 {
   "surf-tracker": {
-    "count": 140,
-    "uniques": 74,
+    "count": 142,
+    "uniques": 76,
     "clones": [
       {
         "timestamp": "2026-06-29T00:00:00Z",
@@ -437,12 +437,42 @@
         "timestamp": "2026-09-23T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-24T00:00:00Z",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "timestamp": "2026-09-25T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-26T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-27T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-28T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-29T00:00:00Z",
+        "count": 1,
+        "uniques": 1
       }
     ]
   },
   "Star-Wars-Simulator": {
-    "count": 22,
-    "uniques": 20,
+    "count": 25,
+    "uniques": 22,
     "clones": [
       {
         "timestamp": "2026-06-29T00:00:00Z",
@@ -878,12 +908,42 @@
         "timestamp": "2026-09-23T00:00:00Z",
         "count": 1,
         "uniques": 1
+      },
+      {
+        "timestamp": "2026-09-24T00:00:00Z",
+        "count": 2,
+        "uniques": 1
+      },
+      {
+        "timestamp": "2026-09-25T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-26T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-27T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-28T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-29T00:00:00Z",
+        "count": 1,
+        "uniques": 1
       }
     ]
   },
   "Public-transport-network": {
-    "count": 29,
-    "uniques": 27,
+    "count": 32,
+    "uniques": 29,
     "clones": [
       {
         "timestamp": "2026-06-29T00:00:00Z",
@@ -1319,12 +1379,42 @@
         "timestamp": "2026-09-23T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-24T00:00:00Z",
+        "count": 2,
+        "uniques": 1
+      },
+      {
+        "timestamp": "2026-09-25T00:00:00Z",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "timestamp": "2026-09-26T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-27T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-28T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-29T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
   "Google-Project": {
-    "count": 11,
-    "uniques": 10,
+    "count": 12,
+    "uniques": 11,
     "clones": [
       {
         "timestamp": "2026-06-29T00:00:00Z",
@@ -1758,6 +1848,36 @@
       },
       {
         "timestamp": "2026-09-23T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-24T00:00:00Z",
+        "count": 1,
+        "uniques": 1
+      },
+      {
+        "timestamp": "2026-09-25T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-26T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-27T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-28T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-09-29T00:00:00Z",
         "count": 0,
         "uniques": 0
       }

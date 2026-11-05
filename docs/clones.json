@@ -642,12 +642,17 @@
         "timestamp": "2026-11-03T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-11-04T00:00:00Z",
+        "count": 0,
+        "uniques": 0
       }
     ]
   },
   "Star-Wars-Simulator": {
-    "count": 40,
-    "uniques": 35,
+    "count": 42,
+    "uniques": 37,
     "clones": [
       {
         "timestamp": "2026-06-29T00:00:00Z",
@@ -1288,12 +1293,17 @@
         "timestamp": "2026-11-03T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-11-04T00:00:00Z",
+        "count": 2,
+        "uniques": 2
       }
     ]
   },
   "Public-transport-network": {
-    "count": 51,
-    "uniques": 47,
+    "count": 52,
+    "uniques": 48,
     "clones": [
       {
         "timestamp": "2026-06-29T00:00:00Z",
@@ -1934,6 +1944,11 @@
         "timestamp": "2026-11-03T00:00:00Z",
         "count": 0,
         "uniques": 0
+      },
+      {
+        "timestamp": "2026-11-04T00:00:00Z",
+        "count": 1,
+        "uniques": 1
       }
     ]
   },
@@ -2578,6 +2593,11 @@
       },
       {
         "timestamp": "2026-11-03T00:00:00Z",
+        "count": 0,
+        "uniques": 0
+      },
+      {
+        "timestamp": "2026-11-04T00:00:00Z",
         "count": 0,
         "uniques": 0
       }
